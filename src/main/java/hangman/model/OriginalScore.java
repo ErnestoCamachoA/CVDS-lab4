@@ -3,6 +3,7 @@ package hangman.model;
 import hangman.exception.hangmanException;
 
 public class OriginalScore implements GameScore {
+	
 
 	/**
 	 * @pre inicia con 100 puntos
@@ -14,10 +15,15 @@ public class OriginalScore implements GameScore {
 	 */
 	@Override
 	public int calculateScore(int correctCount, int incorrectCount) throws hangmanException {
+		int i = 100;
 		if(correctCount< 0 || incorrectCount< 0) {
 			throw new hangmanException(hangmanException.NEGATIVE_VALUE_EXCEPTION);
 		}
-		return 0;
+		i-= incorrectCount*10;
+		if (i < 0) {
+			i = 0;
+		}
+		return i;
 	}
 
 }

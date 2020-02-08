@@ -15,10 +15,16 @@ public class BonusScore implements GameScore {
 	 */
 	@Override
 	public int calculateScore(int correctCount, int incorrectCount)throws hangmanException {
+		int i = 0;
 		if(correctCount< 0 || incorrectCount< 0) {
 			throw new hangmanException(hangmanException.NEGATIVE_VALUE_EXCEPTION);
 		}
-		return 0;
+		i-= incorrectCount*5;
+		i+= correctCount*10;
+		if (i < 0) {
+			i = 0;
+		}
+		return i;
 	}
 
 }
