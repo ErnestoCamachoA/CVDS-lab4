@@ -4,7 +4,6 @@ import hangman.exception.hangmanException;
 
 public class OriginalScore implements GameScore {
 
-	
 	/**
 	 * @pre inicia con 100 puntos
 	 * @pos condicion actual del puntaje
