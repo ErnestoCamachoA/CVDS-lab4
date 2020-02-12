@@ -20,6 +20,7 @@ import hangman.GUI;
 import hangman.SwingProject;
 import hangman.model.FunctionModel;
 import hangman.view.FunctionPanel;
+import hangman.exception.*;
 
 
 public class FunctionController {
@@ -28,7 +29,7 @@ public class FunctionController {
     private FunctionModel model;
     private MainFrameController rootController;
     
-    public FunctionController(FunctionPanel panel, FunctionModel model,MainFrameController rootController){
+    public FunctionController(FunctionPanel panel, FunctionModel model,MainFrameController rootController)throws hangmanException{
         this.model = (FunctionModel) model;
         this.panel = (FunctionPanel) panel;
         this.rootController = rootController;
@@ -71,7 +72,11 @@ public class FunctionController {
             }
         });
         panel.getPlayButton().addActionListener((ActionEvent e) -> {
-            gameControllerReference.resetGame();
+            try {
+                gameControllerReference.resetGame();
+            } catch (hangmanException ex) {
+                ex.printStackTrace();
+            }
             rootController.changeVisibleCard(GUI.GAME_KEY);
         });
         panel.getHighScoresButton().addActionListener((ActionEvent e) -> {

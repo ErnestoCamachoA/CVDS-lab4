@@ -13,6 +13,7 @@
 package hangman.model;
 
 import hangman.model.dictionary.HangmanDictionary;
+import hangman.exception.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -25,7 +26,9 @@ public class GameModel {
     private int incorrectCount;
     private int correctCount;
     private LocalDateTime dateTime;
-    private int gameScore;
+    //private int gameScore;
+    private GameScore gameScore;
+    private int puntaje;
     private int[] lettersUsed;
     
     
@@ -37,25 +40,27 @@ public class GameModel {
     
     
    
-    public GameModel(HangmanDictionary dictionary){
+    public GameModel(HangmanDictionary dictionary, GameScore gameScore)throws hangmanException{
         //this.dictionary = new EnglishDictionaryDataSource();
         this.dictionary=dictionary;
         randomWord = selectRandomWord();
         randomWordCharArray = randomWord.toCharArray();
         incorrectCount = 0;
         correctCount = 0;
-        gameScore = 100;
+        this.gameScore = gameScore;
+        puntaje= gameScore.calculateScore(correctCount,incorrectCount);
         
     }
     
     //method: reset
     //purpose: reset this game model for a new game
-    public void reset(){
+    public void reset()throws hangmanException{
         randomWord = selectRandomWord();
         randomWordCharArray = randomWord.toCharArray();
         incorrectCount = 0;
         correctCount = 0;
-        gameScore = 100;
+        this.gameScore = gameScore;
+        puntaje= gameScore.calculateScore(correctCount,incorrectCount);
     }
 
     //setDateTime
@@ -67,7 +72,7 @@ public class GameModel {
     //method: makeGuess
     //purpose: check if user guess is in string. Return a
     // list of positions if character is found in string
-    public ArrayList<Integer> makeGuess(String guess){
+    public ArrayList<Integer> makeGuess(String guess)throws hangmanException{
         char guessChar = guess.charAt(0);
         ArrayList<Integer> positions = new ArrayList<>();
         for(int i = 0; i < randomWordCharArray.length; i++){
@@ -77,7 +82,7 @@ public class GameModel {
         }
         if(positions.size() == 0){
             incorrectCount++;
-            gameScore -= 10;
+            puntaje= gameScore.calculateScore(correctCount,incorrectCount);
         } else {
             correctCount += positions.size();
         }
@@ -95,13 +100,13 @@ public class GameModel {
     //setScore
     //purpose: sets score value to points
     public void setScore(int score) {
-        this.gameScore = score;
+        this.puntaje = score;
     }
     
     //getScore
     //purpose: returns current score value
-    public int getScore() {
-        return gameScore;
+    public int getScore() throws hangmanException {
+        return gameScore.calculateScore(correctCount,incorrectCount);
     }
 
     //name: selectRandomWord()
@@ -126,14 +131,14 @@ public class GameModel {
 
     //method: getGameScore
     //purpose: return current score
-    public int getGameScore() {
-        return gameScore;
+    public int getGameScore()throws hangmanException {
+        return gameScore.calculateScore(correctCount,incorrectCount);
     }
 
     //method: setGameScore
     //purpose: set current game score
     public void setGameScore(int gameScore) {
-        this.gameScore = gameScore;
+        this.puntaje = gameScore;
     }
     
     //method: getWordLength

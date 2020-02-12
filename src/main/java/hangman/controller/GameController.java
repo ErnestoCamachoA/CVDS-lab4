@@ -27,6 +27,7 @@ import hangman.SwingProject;
 import hangman.model.GameModel;
 import hangman.model.Language;
 import hangman.view.GamePanel;
+import hangman.exception.hangmanException;
 
 public class GameController{
     private GamePanel panel;
@@ -38,7 +39,7 @@ public class GameController{
     
     
    
-    public GameController(GamePanel panel, GameModel model, MainFrameController rootController,Language lan){
+    public GameController(GamePanel panel, GameModel model, MainFrameController rootController,Language lan)throws hangmanException{
         this.lan=lan;
         this.panel = (GamePanel) panel;
         this.model = (GameModel) model;
@@ -51,16 +52,21 @@ public class GameController{
     //method: setup
     //purpose: set contents of model to be reflected in the view, as well as
     // set button listeners, and activates time label
-    private void setup(){
+    private void setup()throws hangmanException{
         panel.getPoints().setText(lan.getPointsNameLabel()+ Integer.toString(model.getGameScore()));
         panel.getGameNameLabel().setText(lan.getHangmanLabel());
         panel.addBlanks(model.getWordLength());
         
-        
+
         for(JButton jb : panel.getKeyboardButtonArray()){
             jb.addActionListener((ActionEvent e) -> {
                 jb.setEnabled(false);
-                ArrayList<Integer> positions = model.makeGuess(jb.getText());
+                ArrayList<Integer> positions = null;
+                try {
+                    positions = model.makeGuess(jb.getText());
+                } catch (hangmanException ex) {
+                    ex.printStackTrace();
+                }
                 for(int pos : positions){
                     panel.getBlanksArrayList().get(pos).setLetter(jb.getText());
                     panel.getBlanksArrayList().get(pos).repaint();
@@ -69,8 +75,12 @@ public class GameController{
                     panel.getHmPanel().incrementIncorrectGuesses();
                     panel.getHmPanel().repaint();
                 }
-                
-                panel.getPoints().setText(lan.getPointsNameLabel()+ Integer.toString(model.getGameScore()));
+
+                try {
+                    panel.getPoints().setText(lan.getPointsNameLabel()+ Integer.toString(model.getGameScore()));
+                } catch (hangmanException ex) {
+                    ex.printStackTrace();
+                }
                 int incorrectCount = model.getIncorrectCount();
                 int correctCount = model.getCorrectCount();
                 if(incorrectCount > 5 || correctCount == model.getWordLength()){
@@ -141,7 +151,7 @@ public class GameController{
     
     //method: resetGame
     //purpose: reset associated view and controller for a new game
-    public void resetGame(){
+    public void resetGame()throws hangmanException{
         model.reset();
         panel.getPoints().setText(lan.getPointsNameLabel()+ Integer.toString(model.getGameScore()));
         panel.addBlanks(model.getWordLength());
